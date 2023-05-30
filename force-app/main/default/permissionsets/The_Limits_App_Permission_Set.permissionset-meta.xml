@@ -9,10 +9,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LimitsAppInvocable_LimitsApp</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>LimitsAppMockImpl</apexClass>
         <enabled>true</enabled>
     </classAccesses>
