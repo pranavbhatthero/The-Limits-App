@@ -365,7 +365,6 @@
         <numberOfColumns>12</numberOfColumns>
         <rowHeight>36</rowHeight>
     </dashboardGridLayout>
-    <dashboardType>MyTeamUser</dashboardType>
     <isGridLayout>true</isGridLayout>
     <textColor>#000000</textColor>
     <title>Lightning Platform REST and Bulk APIs Limits Dashboard</title>
