@@ -17,9 +17,18 @@ private class LimitsAppTest {
         insert l3;
         //String l3ID = [SELECT Id FROM Limit_LimitsApp__c WHERE Latest__c = true].Id;
         Test.stopTest();
-        //System.assert(LimitsApp.getLimitsRecordId() == l3ID);
         System.assert(LimitsApp.getLimitsRecordId() == l3.Id);
     }
+
+    @isTest static void testgetLimitsRecordIdOnClick() {
+        Test.startTest();
+        Limit_LimitsApp__c l4 = new Limit_LimitsApp__c(DailyApiRequests_Max__c = 5000, DailyApiRequests_Remaining__c = 4937, Latest__c = True);
+        insert l4;
+        //String l3ID = [SELECT Id FROM Limit_LimitsApp__c WHERE Latest__c = true].Id;
+        Test.stopTest();
+        System.assert(LimitsApp.getLimitsRecordIdOnClick() == l4.Id);
+    }
+
     
     @isTest static void TestLimitsAppTest() {
         Test.startTest();

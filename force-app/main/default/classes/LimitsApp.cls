@@ -22,6 +22,20 @@ public class LimitsApp {
         }
         return limitsRecordId;
     }
+
+    @AuraEnabled
+    public static String getLimitsRecordIdOnClick() {
+        String limitsRecordId;
+        try {
+            limitsRecordId = [SELECT Id FROM Limit_LimitsApp__c WHERE Latest__c = true].Id;
+        } catch(QueryException e) {
+            limitsRecordId = null; // set to null if there is no matching record
+            // Log the error message for debugging purposes
+            System.debug('Error querying LimitsApp record: ' + e.getMessage());
+        }
+        return limitsRecordId;
+    }
+
     
     
     @future(callout=true) 
