@@ -3,7 +3,7 @@ global class LimitsAppMockImpl implements HttpCalloutMock{
 	// Implement this interface method 
     global HTTPResponse respond(HTTPRequest req){
         // Optionally, only send a mock response for a specific endpoint and method.
-        System.assertEquals('callout:TestLimits_NC/services/data/v56.0/limits', req.getEndpoint());
+        System.assertEquals('callout:LimitsAppAPI_NC/services/data/v56.0/limits', req.getEndpoint());
         System.assertEquals('GET', req.getMethod());
         // Create a fake response
         HttpResponse res = new HttpResponse();
