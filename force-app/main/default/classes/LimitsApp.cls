@@ -1,4 +1,4 @@
-public class LimitsApp {
+public with sharing class LimitsApp {
     
     @AuraEnabled
     public static void scheduleAlert(){ 
@@ -22,7 +22,7 @@ public class LimitsApp {
         }
         return limitsRecordId;
     }
-
+    
     @AuraEnabled
     public static String getLimitsRecordIdOnClick() {
         String limitsRecordId;
@@ -35,7 +35,7 @@ public class LimitsApp {
         }
         return limitsRecordId;
     }
-
+    
     
     
     @future(callout=true) 
@@ -84,7 +84,7 @@ public class LimitsApp {
                 'HourlyTimeBasedWorkflow'};
                     
                     
-        Http http = new Http();
+                    Http http = new Http();
         HttpRequest httpReq = new HttpRequest();
         HttpResponse httpResponse = new HttpResponse();
         httpReq.setMethod('GET');
@@ -156,22 +156,32 @@ public class LimitsApp {
                 System.debug('***** ERROR Remaining ---  '+ e);
             }
         }
-        insert lla;           
-        // Set all other limit values to latest = false
-        try{
-            for(List<Limit_LimitsApp__c> oldLimits : [SELECT Latest__c 
-                                                      FROM Limit_LimitsApp__c
-                                                      WHERE Id !=: lla.Id])
-            {
-                for(Limit_LimitsApp__c oldLimit : oldLimits){
-                    oldLimit.Latest__c = false;
+        
+        //Schema.DescribeSObjectResult limitsObject  = Limit_LimitsApp__c.SObjectType.getDescribe();
+        if (objectFieldIsCreatablePermCheck()){
+        {
+            insert lla;
+        }           
+            //Set all other limit values to latest = false
+            try{
+                for(List<Limit_LimitsApp__c> oldLimits : [SELECT Latest__c 
+                                                          FROM Limit_LimitsApp__c
+                                                          WHERE Id !=: lla.Id])
+                {
+                    for(Limit_LimitsApp__c oldLimit : oldLimits){
+                        oldLimit.Latest__c = false;
+                    }
+                    if (objectFieldIsUpdatablePermCheck())
+                    {
+                    update oldLimits;
                 }
-                update oldLimits;
+                    
+                }
+            } catch(Exception e) {
+                System.debug('***** ERROR Updating Existing Limits to Latest__c = False ---' + e);
             }
-        } catch(Exception e) {
-            System.debug('***** ERROR Updating Existing Limits to Latest__c = False ---' + e);
-        }
     }  
+    }
     
     
     public static Boolean limitCreatedInLastMinute(){
@@ -188,7 +198,112 @@ public class LimitsApp {
         }
         return createdInLastMin;
     }
-
+    
+        // Permission Check for IsUpdatable()
+    public static Boolean objectFieldIsUpdatablePermCheck(){
+        Schema.DescribeSObjectResult limitsObject  = Limit_LimitsApp__c.SObjectType.getDescribe();
+        if (limitsObject.isUpdateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.Latest__c.isUpdateable())
+        {
+            return true; 
+        } else {
+            return false;
+        }
+    }
+    
+        // Permission Check for IsCreatable()
+    public static Boolean objectFieldIsCreatablePermCheck(){
+        Schema.DescribeSObjectResult limitsObject  = Limit_LimitsApp__c.SObjectType.getDescribe();
+        if (limitsObject.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.Latest__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.SingleEmail_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.StreamingApiConcurrentClients_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.AnalyticsExternalDataSizeMB_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.ConcurrentAsyncGetReportInstances_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.ConcurrentSyncReportRuns_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyAsyncReportRuns_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlySyncReportRuns_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyDashboardRefreshes_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyDashboardResults_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyDashboardStatuses_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.MassEmail_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyApiRequests_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyAsyncApexExecutions_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyAsyncApexTests_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyBulkApiBatches_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyBulkV2QueryFileStorageMB_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyBulkV2QueryJobs_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyPublishedPlatformEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyPSVPlatformEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyStandardVolumePlatformEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyDeliveredPlatformEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.MonthlyPlatformEventsUsageEntitlement_Ma__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.PrivateConnectOutboundCalloutHourly_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyLongTermIdMapping_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyODataCallout_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyShortTermIdMapping_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.ActiveScratchOrgs_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyScratchOrgs_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.Package2VersionCreates_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.Package2VersionCreatesWOV_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyFunctionsApiCallLimit_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DataStorageMB_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.FileStorageMB_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyDurableGenericStreamingApiEvents_Ma__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyDurableStreamingApiEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DurableStreamingApiConcurrentClients_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyGenericStreamingApiEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyStreamingApiEvents_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyWorkflowEmails_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyTimeBasedWorkflow_Max__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.SingleEmail_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.StreamingApiConcurrentClients_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.AnalyticsExternalDataSizeMB_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.ConcurrentAsyncGetReportInstances_Remain__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.ConcurrentSyncReportRuns_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyAsyncReportRuns_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlySyncReportRuns_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyDashboardRefreshes_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyDashboardResults_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyDashboardStatuses_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.MassEmail_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyApiRequests_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyAsyncApexExecutions_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyAsyncApexTests_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyBulkApiBatches_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyBulkV2QueryFileStorageMB_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyBulkV2QueryJobs_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyPublishedPlatformEvents_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyPSVPlatformEvents_Rem__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyStandardVolumePlatformEvents_Remain__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyDeliveredPlatformEvents_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.MonthlyPlatformEventsUsageEntitlement_Re__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.PrivateConnectOutboundCalloutHourly_Rem__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyLongTermIdMapping_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyODataCallout_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyShortTermIdMapping_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.ActiveScratchOrgs_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyScratchOrgs_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.Package2VersionCreates_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.Package2VersionCreatesWOV_Rem__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyFunctionsApiCallLimit_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DataStorageMB_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.FileStorageMB_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyDurableGenericStreamingApiEvents_Re__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyDurableStreamingApiEvents_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DurableStreamingApiConcurrentClients_Rem__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyGenericStreamingApiEvents_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyStreamingApiEvents_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.DailyWorkflowEmails_Remaining__c.isCreateable() &&
+            Schema.sObjectType.Limit_LimitsApp__c.fields.HourlyTimeBasedWorkflow_Remaining__c.isCreateable()
+           )
+        {
+            return true; 
+        } else {
+            return false;
+        }
+    }
+    
     @InvocableMethod(label='Get Limits')
     public static List<Results> getLimitsAdHoc(){ 
         
@@ -242,7 +357,7 @@ public class LimitsApp {
                     'DailyWorkflowEmails',
                     'HourlyTimeBasedWorkflow'};                     
                         
-            Http http = new Http();
+                        Http http = new Http();
             HttpRequest httpReq = new HttpRequest();
             HttpResponse httpResponse = new HttpResponse(); 
             
@@ -316,7 +431,9 @@ public class LimitsApp {
                     System.debug('***** ERROR Remaining ---  '+ e);
                 }
             }
+            if (objectFieldIsCreatablePermCheck()){
             insert lla;           
+            }
             // Set all other limit values to latest = false
             try{
                 for(List<Limit_LimitsApp__c> oldLimits : [SELECT Latest__c 
@@ -326,14 +443,16 @@ public class LimitsApp {
                     for(Limit_LimitsApp__c oldLimit : oldLimits){
                         oldLimit.Latest__c = false;
                     }
+                    if (objectFieldIsUpdatablePermCheck()){
                     update oldLimits;
+                }
                 }
             } catch(Exception e) {
                 System.debug('***** ERROR Updating Existing Limits to Latest__c = False ---' + e);
             }
         }
         return results;
-    }  
+    }
     
     public class Results{
         
